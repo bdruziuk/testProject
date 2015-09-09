@@ -40,8 +40,8 @@
                         filed: "id"
                     },
                     interval: {
-                        start: 2,
-                        count: 20
+                        start: 5,
+                        count: 10
                     }
                 };
 
