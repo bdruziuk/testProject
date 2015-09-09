@@ -26,7 +26,7 @@ angular.module('app').service('gridModel', function () {
 
     function getDataInterval(data, interval) {
 
-        if (interval.count && interval.start) {
+        if (typeof(interval.count)!=='undefined' && typeof(interval.start)!=='undefined' ) {
            return data.splice(interval.start, interval.count);
         }
         else return data;
@@ -35,11 +35,18 @@ angular.module('app').service('gridModel', function () {
     this.getData = function (settings) {
 
         var data = generateData();
-
-        if(settings.interval.start || settings.interval.count) {
-            var splicedData = getDataInterval(data, settings.interval);
+        var len=data.length;
+        
+        if(settings.interval) {
+            if(!settings.interval.start){
+                settings.interval.start=0;
+            }
+            if(!settings.interval.count){
+                settings.interval.count=20;
+            }
+            var data = getDataInterval(data, settings.interval);
         }
 
-        return splicedData;
+        return [{items:data,totalCount:len}];
     };
 });
