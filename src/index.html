@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+	<title>Base project for windmill</title>
+	<meta charset="utf-8">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<!-- start - favicons -->
+	<!-- end - favicons -->
+	<!-- build:css(src) assets/styles/vendor.css -->
+	<!-- bower:css -->
+	<link rel="stylesheet" type="text/css" href="bower_components/angular-ui-grid/ui-grid.css" />
+	<!-- endbower -->
+	<!-- endbuild -->
+	<!-- build:css(.tmp) assets/styles/app.css -->
+    <!-- endbuild -->
+</head>
+<body ng-app="app">
+	<div ui-view="header"></div>
+	<div ui-view="content"></div>
+	<!-- build:js(src) scripts/vendor.js -->
+	<!-- bower:js -->
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/ui-router/release/angular-ui-router.js"></script>
+	<script src="bower_components/angular-resource/angular-resource.js"></script>
+	<script src="bower_components/angular-ui-grid/ui-grid.js"></script>
+	<script src="bower_components/angular-mocks/angular-mocks.js"></script>
+	<!-- endbower -->
+	<!-- endbuild -->
+	<!-- build:js(src) scripts/app.js -->
+	<!-- injector:js -->
+	<script src="app/app.js"></script>
+	<script src="app/_components/components.module.js"></script>
+	<script src="app/_components/dynamic-sample/dynamic-sample.module.js"></script>
+	<script src="app/_components/grid-sample/grid-sample.module.js"></script>
+	<script src="app/_components/static-sample/static-sample.module.js"></script>
+	<script src="app/_header/header.module.js"></script>
+	<script src="app/sample/sample.module.js"></script>
+	<script src="app/app.config.js"></script>
+	<script src="app/sample/sample.config.js"></script>
+	<script src="app/_components/dynamic-sample/dynamic-sample.service.js"></script>
+	<script src="app/_components/grid-sample/grid-sample.service.js"></script>
+	<script src="app/_components/static-sample/static-sample.service.js"></script>
+	<script src="app/_components/dynamic-sample/dynamic-sample.directive.js"></script>
+	<script src="app/_components/grid-sample/grid-sample.directive.js"></script>
+	<script src="app/_components/static-sample/static-sample.directive.js"></script>
+	<script src="app/_header/header.controller.js"></script>
+	<script src="app/sample/sample.controller.js"></script>
+	<!-- endinjector -->
+	<!-- injector:mocks -->
+	<script src="mocks/backend.mock.js"></script>
+	<script src="mocks/_service-models/dynamic.model.js"></script>
+	<script src="mocks/_service-models/grid.model.js"></script>
+	<script src="mocks/_service-models/static.model.js"></script>
+	<!-- endinjector -->
+	<!-- endbuild -->
+</body>

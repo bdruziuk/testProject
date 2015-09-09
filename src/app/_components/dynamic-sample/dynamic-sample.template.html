@@ -1,0 +1,9 @@
+Id: <input type="text" ng-model="vm.payload.id" />
+value: <input type="text" ng-model="vm.payload.value" />
+<input type="button" value="Add" ng-click="vm.addElement()" />
+<ul>
+	<li ng-repeat="element in vm.data">
+		{{element.id}} - {{element.value}}
+		<a ng-click="vm.deleteElement($index)">remove</a>
+	</li>
+</ul>
