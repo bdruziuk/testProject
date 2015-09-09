@@ -19,7 +19,7 @@ angular.module('app').service('gridModel', function () {
         data[j] = temp;
     }
 
-    this.getData = function (start, count) {
-      return data.splice(start, count);
+    this.getData = function (settings) {
+      return data.splice(settings.interval.start, settings.interval.count);
     };
 });

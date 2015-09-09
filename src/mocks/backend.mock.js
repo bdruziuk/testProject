@@ -50,7 +50,7 @@ angular.module('app').run(function($httpBackend, staticModel, dynamicModel, grid
 	$httpBackend.whenGET(/\/~api\/grid\/sample/).respond(function (method, url, data) {
 		logRequest(method, url, data);
 		var parameters = extractQueryParameters(url);
-		var gridList = gridModel.getData(parameters.start - 1, parameters.count);
+		var gridList = gridModel.getData(parameters);
 		return [200, gridList, {}];
 	});
 
