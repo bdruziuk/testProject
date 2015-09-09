@@ -26,7 +26,26 @@
             loadData();
 
             function loadData() {
-                gridSampleService.getData(1,10).then(function(data) {
+
+                var settings = {
+                    filter: [
+                        {
+                            filed: 'id',
+                            value: '2'
+                        }
+                    ]
+                    ,
+                    sorting: {
+                        direction: 1,
+                        filed: "id"
+                    },
+                    interval: {
+                        start: 5,
+                        count: 10
+                    }
+                };
+
+                gridSampleService.getData(settings).then(function(data) {
                     vm.gridOptions.data = data;
                 });
             }
