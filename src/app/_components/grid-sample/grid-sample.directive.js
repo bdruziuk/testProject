@@ -79,7 +79,7 @@
                     }
               }
               if(params.length>0){
-                $scope.settings.filter=params;
+                $scope.settings.filter=JSON.stringify(params);
               }else{
                 $scope.settings.filter=[];
               }
