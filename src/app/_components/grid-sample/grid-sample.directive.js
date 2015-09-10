@@ -92,6 +92,7 @@
                             //$scope.gridApi.infiniteScroll.saveScrollPercentage();
                             $scope.gridOptions.data=data[0].items;
                             $scope.gridApi.infiniteScroll.resetScroll(false, true);
+                             currentPage=0;
                         });
                   },500);
             };
@@ -112,6 +113,7 @@
                 gridSampleService.getData($scope.settings).then(function(data) {
                     $scope.gridOptions.data=data[0].items;
                      $scope.gridApi.infiniteScroll.resetScroll(false, true);
+                     currentPage=0;
                 });
                 
             };
