@@ -30,6 +30,7 @@
                   gridApi.infiniteScroll.on.needLoadMoreData($scope, $scope.getNextPage);
                   gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, $scope.getPreviousPage);
                   gridApi.core.on.filterChanged($scope,$scope.onFilterChanged);
+                  gridApi.core.on.sortChanged( $scope, $scope.onSortChanged);
                   $scope.gridApi = gridApi;
                   
                 }
@@ -85,7 +86,16 @@
                         });
                   },500);
             };
-
+            $scope.onSortChanged = function ( grid, sortColumns ) {
+                var direction=sortColumns[0].sort.direction;
+                var columnName=sortColumns[0].name;
+                $scope.settings.sorting.direction=direction;
+                $scope.settings.sorting.field=columnName;
+                $scope.settings.interval.start=0;
+                gridSampleService.getData($scope.settings).then(function(data) {
+                    $scope.gridOptions.data=data[0].items;
+                });
+            };
             $scope.settings = {
                 filter: [
                     // {
@@ -95,7 +105,7 @@
                 ],
                 sorting: {
                     direction: 1,
-                    filed: "id"
+                    field: "id"
                 },
                 interval: {
                      start: 0,
