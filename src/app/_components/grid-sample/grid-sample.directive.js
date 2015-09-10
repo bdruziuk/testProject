@@ -91,6 +91,7 @@
                          gridSampleService.getData($scope.settings).then(function(data) {
                             //$scope.gridApi.infiniteScroll.saveScrollPercentage();
                             $scope.gridOptions.data=data[0].items;
+                            $scope.gridApi.infiniteScroll.resetScroll(false, true);
                         });
                   },500);
             };
@@ -110,6 +111,7 @@
                 $scope.settings.interval.start=0;
                 gridSampleService.getData($scope.settings).then(function(data) {
                     $scope.gridOptions.data=data[0].items;
+                     $scope.gridApi.infiniteScroll.resetScroll(false, true);
                 });
                 
             };
