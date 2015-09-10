@@ -25,9 +25,11 @@ angular.module('app').service('gridModel', function () {
     }
 
     function getDataInterval(data, interval) {
+        if(interval) {
+            if(!interval.start) interval.start = 0;
+            if(!interval.count) interval.count = 20;
 
-        if (typeof(interval.count)!=='undefined' && typeof(interval.start)!=='undefined' ) {
-           return data.splice(interval.start, interval.count);
+            return data.splice(interval.start, interval.count);
         }
         else return data;
     };
@@ -52,24 +54,43 @@ angular.module('app').service('gridModel', function () {
 
     function sortData(data, sorting) {
 
+        if(sorting && sorting.direction) {
+
+            if(!sorting.direction) sorting.direction = 'asc';
+            if(!sorting.field) sorting.field = 'id';
+
+            data.sort(function (first, second) {
+
+                var firstVal = first[sorting.field];
+                var secondVal = second[sorting.field];
+
+                if(!isNaN(first[sorting.field]) && !isNaN(second[sorting.field])) {
+                    firstVal = parseInt(first[sorting.field]);
+                    secondVal = parseInt(second[sorting.field]);
+                }
+
+                if (firstVal < secondVal)
+                    return -1;
+                if (firstVal > secondVal)
+                    return 1;
+                return 0;
+            });
+
+            if (sorting.direction == 'desc') data.reverse();
+
+            return data;
+        }
+        else return data;
     };
 
     this.getData = function (settings) {
 
         var data = generateData();
         var filteredData = filterData(data, settings.filter);
+        var sortedData = sortData(filteredData, settings.sorting);
+        var partData = getDataInterval(sortedData, settings.interval);
         var len = filteredData.length;
-        
-        if(settings.interval) {
-            if(!settings.interval.start){
-                settings.interval.start = 0;
-            }
-            if(!settings.interval.count){
-                settings.interval.count = 20;
-            }
-            filteredData = getDataInterval(filteredData, settings.interval);
-        }
 
-        return [{items: filteredData, totalCount: len}];
+        return [{items: partData, totalCount: len}];
     };
 });
