@@ -97,14 +97,20 @@
                 calls to perform remote sorting
             **/
             $scope.onSortChanged = function ( grid, sortColumns ) {
-                var direction=sortColumns[0].sort.direction;
-                var columnName=sortColumns[0].name;
-                $scope.settings.sorting.direction=direction;
-                $scope.settings.sorting.field=columnName;
+                if(sortColumns.length>0){
+                    var direction=sortColumns[0].sort.direction;
+                    var columnName=sortColumns[0].name;
+                    $scope.settings.sorting.direction=direction;
+                    $scope.settings.sorting.field=columnName;
+                }else{ //discard sorting
+                    $scope.settings.sorting.direction="";
+                    $scope.settings.sorting.field="";
+                }
                 $scope.settings.interval.start=0;
                 gridSampleService.getData($scope.settings).then(function(data) {
                     $scope.gridOptions.data=data[0].items;
                 });
+                
             };
             /**
              settings for grid
