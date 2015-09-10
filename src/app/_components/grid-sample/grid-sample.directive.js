@@ -21,13 +21,17 @@
                         name: 'Value'
                     }
                 ],
-                enableSorting: false,
+                enableSorting: true,
+                enableFiltering:true,
+                useExternalFiltering:true,
                 infiniteScrollDown: true,
                 
                 onRegisterApi: function(gridApi){
                   gridApi.infiniteScroll.on.needLoadMoreData($scope, $scope.getNextPage);
                   gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, $scope.getPreviousPage);
+                  gridApi.core.on.filterChanged($scope,$scope.onFilterChanged);
                   $scope.gridApi = gridApi;
+                  
                 }
             };
 
@@ -52,12 +56,47 @@
                     $scope.gridOptions.data = data[0].items;
                  });
             };
+            $scope.onFilterChanged=function(){
+                if (angular.isDefined($scope.filterTimeout)) {
+                    $timeout.cancel($scope.filterTimeout);
+                }   
+
+              var grid = this.grid;
+              var columns=grid.columns;
+              var params=[];
+              for(var i=0;i<columns.length;i++){
+                    if(columns[i]){
+                        var col=columns[i];
+                        if(col.filters){
+                            var f=col.filters[0];
+                            if(f && f.term && f.term.length>0){
+                                params.push({field:col.field,value:f.term})
+                            }
+                        }
+                    }
+              }
+              if(params.length>0){
+                $scope.settings.filter=params;
+              }else{
+                $scope.settings.filter=[];
+              }
+              $scope.settings.interval.start=0;
+           
+                  $scope.filterTimeout=$timeout(function() {
+                  
+                         gridSampleService.getData($scope.settings).then(function(data) {
+                            //$scope.gridApi.infiniteScroll.saveScrollPercentage();
+                            $scope.gridOptions.data=data[0].items;
+                        });
+                  },500);
+            };
+
             $scope.settings = {
                 filter: [
-                    {
-                        filed: 'id',
-                        value: '2'
-                    }
+                    // {
+                    //     filed: 'id',
+                    //     value: '2'
+                    // }
                 ],
                 sorting: {
                     direction: 1,
@@ -68,6 +107,12 @@
                      count: 50
                 }
             };
+
+            $scope.$on("$destroy", function (event) {
+                if (angular.isDefined($scope.filterTimeout)) {
+                    $timeout.cancel($scope.filterTimeout);
+                }
+            });
             $scope.getFirstData();
         })
         .directive('gridSample', function () {
