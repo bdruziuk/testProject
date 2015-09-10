@@ -44,7 +44,7 @@
                 gridSampleService.getData($scope.settings).then(function(data) {
                     $scope.gridApi.infiniteScroll.saveScrollPercentage();
                     $scope.gridOptions.data=$scope.gridOptions.data.concat(data[0].items); 
-                    $scope.gridApi.infiniteScroll.dataLoaded()
+                    $scope.gridApi.infiniteScroll.dataLoaded();
                  });
             };
              /**
@@ -73,7 +73,7 @@
                         if(col.filters){
                             var f=col.filters[0];
                             if(f && f.term && f.term.length>0){
-                                params.push({field:col.field,value:f.term})
+                                params.push({field:col.field,value:f.term});
                             }
                         }
                     }
@@ -125,7 +125,9 @@
                      count: 50
                 }
             };
-
+            /***
+             calls to destory timeout on scope destroy 
+            **/
             $scope.$on("$destroy", function (event) {
                 if (angular.isDefined($scope.filterTimeout)) {
                     $timeout.cancel($scope.filterTimeout);
