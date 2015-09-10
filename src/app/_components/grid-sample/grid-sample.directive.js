@@ -3,14 +3,14 @@
 
     angular
         .module('app.components.gridSample')
-        .constant('gridSampleConfig', {
-
-        })
+        .constant('gridSampleConfig',{})
         .controller('GridSampleController', function($scope,gridSampleConfig, gridSampleService,$timeout) {
-            var currentPage=0;
-            var firstPage=1;
-            var lastPage=0;
-            $scope.gridOptions = {
+            //for private use
+            var _currentPage=0;
+            var _recordTotalCount=0;
+            
+            var vm = angular.extend(this,gridSampleConfig);
+            vm.gridOptions = {
                 columnDefs: [
                     {
                         field: 'id',
@@ -28,47 +28,53 @@
                 infiniteScrollDown: true,
                 //add handlers for events from grid 
                 onRegisterApi: function(gridApi){
-                  gridApi.infiniteScroll.on.needLoadMoreData($scope, $scope.getNextPage);
-                  gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, $scope.getPreviousPage);
-                  gridApi.core.on.filterChanged($scope,$scope.onFilterChanged);
-                  gridApi.core.on.sortChanged( $scope, $scope.onSortChanged);
-                  $scope.gridApi = gridApi;
-                  
+                  vm.gridApi = gridApi;
+                  vm.gridApi.infiniteScroll.on.needLoadMoreData($scope, vm.getNextPage);
+                  vm.gridApi.core.on.filterChanged($scope,vm.onFilterChanged);
+                  vm.gridApi.core.on.sortChanged($scope, vm.onSortChanged);
                 }
             };
+            vm.gridRequestSettings = {
+                filter: [],//array of filters for remote filtering  as // { filed: 'id',value: '2'}
+                sorting: {}, //config for sorting as {direction:"ASC",field:"id"}
+                interval: {start: 0,count: 50}// config for infinitive scroll ,define start position 
+                                                //and amount of records to load
+            }; 
             /**
-            calls to get next page on infinity scroll
+             calls to get next page on infinity scroll
             **/
-            $scope.getNextPage = function(){
-                currentPage++;
-                $scope.settings.interval.start=(currentPage*$scope.settings.interval.count);
-                gridSampleService.getData($scope.settings).then(function(data) {
-                    $scope.gridApi.infiniteScroll.saveScrollPercentage();
-                    $scope.gridOptions.data=$scope.gridOptions.data.concat(data[0].items); 
-                    $scope.gridApi.infiniteScroll.dataLoaded();
+            vm.getNextPage = function(){
+                _currentPage++;
+                var reqCfg=vm.gridRequestSettings;
+                var startPosition=_currentPage*reqCfg.interval.count;
+                reqCfg.interval.start=(startPosition);
+                gridSampleService.getData(vm.gridRequestSettings).then(function(data) {
+                    vm.gridApi.infiniteScroll.saveScrollPercentage();
+                    vm.gridOptions.data=vm.gridOptions.data.concat(data[0].items); 
+                    var isContunieScrolling=vm.gridOptions.data.length<_recordTotalCount;
+                    vm.gridApi.infiniteScroll.dataLoaded(false,isContunieScrolling);
                  });
             };
-             /**
+            /**
                 calls to get first portiion of data for grid
             **/
-            $scope.getFirstData = function() {
-                 gridSampleService.getData($scope.settings).then(function(data) {
-                    lastPage=data[0].totalCount/$scope.settings.interval.count;
-                    $scope.gridOptions.data = data[0].items;
-                 });
+            vm.getFirstData = function() {
+                  gridSampleService.getData(vm.gridRequestSettings).then(function(data) {
+                     vm.gridOptions.data = data[0].items;
+                     _recordTotalCount=data[0].totalCount
+                  });
             };
-             /**
-                calls to perform remote filtering
+            /**
+               calls to perform remote filtering
             **/
-            $scope.onFilterChanged=function(){
-                if (angular.isDefined($scope.filterTimeout)) {
-                    $timeout.cancel($scope.filterTimeout);
-                }   
-
-              var grid = this.grid;
-              var columns=grid.columns;
-              var params=[];
-              for(var i=0;i<columns.length;i++){
+            vm.onFilterChanged=function(){
+                if (angular.isDefined(vm.filterTimeout)) {
+                    $timeout.cancel(vm.filterTimeout);
+                }
+                var grid = this.grid;
+                var columns=grid.columns;
+                var params=[];
+                for(var i=0;i<columns.length;i++){
                     if(columns[i]){
                         var col=columns[i];
                         if(col.filters){
@@ -78,81 +84,66 @@
                             }
                         }
                     }
-              }
-              if(params.length>0){
-                $scope.settings.filter=JSON.stringify(params);
-              }else{
-                $scope.settings.filter=[];
-              }
-              $scope.settings.interval.start=0;
-           
-                  $scope.filterTimeout=$timeout(function() {
-                  
-                         gridSampleService.getData($scope.settings).then(function(data) {
-                            //$scope.gridApi.infiniteScroll.saveScrollPercentage();
-                            $scope.gridOptions.data=data[0].items;
-                            $scope.gridApi.infiniteScroll.resetScroll(false, true);
-                             currentPage=0;
-                        });
+                }
+                if(params.length>0){
+                    vm.gridRequestSettings.filter=JSON.stringify(params);
+                }else{
+                    vm.gridRequestSettings.filter=[];
+                }
+                vm.gridRequestSettings.interval.start=0;
+                _currentPage=0;
+               
+                //set timeout to prevent trigger request due to ofthen typing in input
+                vm.filterTimeout=$timeout(function() {
+                    gridSampleService.getData(vm.gridRequestSettings).then(function(data) {
+                        _recordTotalCount=data[0].totalCount;
+                        vm.gridOptions.data=data[0].items;
+                        vm.gridApi.infiniteScroll.resetScroll(false, vm.gridOptions.data.length<_recordTotalCount);
+                        
+                    });
                   },500);
             };
-             /**
+            /**
                 calls to perform remote sorting
             **/
-            $scope.onSortChanged = function ( grid, sortColumns ) {
+            vm.onSortChanged = function ( grid, sortColumns ) {
                 if(sortColumns.length>0){
                     var direction=sortColumns[0].sort.direction;
                     var columnName=sortColumns[0].name;
-                    $scope.settings.sorting.direction=direction;
-                    $scope.settings.sorting.field=columnName;
+                    vm.gridRequestSettings.sorting.direction=direction;
+                    vm.gridRequestSettings.sorting.field=columnName;
                 }else{ //discard sorting
-                    $scope.settings.sorting.direction="";
-                    $scope.settings.sorting.field="";
+                    vm.gridRequestSettings.sorting.direction="";
+                    vm.gridRequestSettings.sorting.field="";
                 }
-                $scope.settings.interval.start=0;
-                gridSampleService.getData($scope.settings).then(function(data) {
-                    $scope.gridOptions.data=data[0].items;
-                     $scope.gridApi.infiniteScroll.resetScroll(false, true);
-                     currentPage=0;
+                vm.gridRequestSettings.interval.start=0;
+                _currentPage=0;
+                gridSampleService.getData(vm.gridRequestSettings).then(function(data) {
+                     _recordTotalCount=data[0].totalCount;
+                    vm.gridOptions.data=data[0].items;
+                    vm.gridApi.infiniteScroll.resetScroll(false, vm.gridOptions.data.length<_recordTotalCount);
+                   
                 });
                 
             };
-            /**
-             settings for grid
-            **/
-            $scope.settings = {
-                filter: [
-                    // {
-                    //     filed: 'id',
-                    //     value: '2'
-                    // }
-                ],
-                sorting: {
-                    direction: '',
-                    field: ''
-                },
-                interval: {
-                     start: 0,
-                     count: 50
-                }
-            };
+            
             /***
              calls to destory timeout on scope destroy 
             **/
             $scope.$on("$destroy", function (event) {
-                if (angular.isDefined($scope.filterTimeout)) {
-                    $timeout.cancel($scope.filterTimeout);
+                if (angular.isDefined(vm.filterTimeout)) {
+                    $timeout.cancel(vm.filterTimeout);
                 }
             });
-            $scope.getFirstData();
+            vm.getFirstData();
         })
         .directive('gridSample', function () {
             return {
                 restrict: 'EA',
-                scope: true,//{},
-                // controller: 'GridSampleController',
-                // controllerAs: 'vm',
-                // bindToController: true,
+                scope: {},
+                controller: 'GridSampleController',
+                controllerAs: 'vmCtrl',
+                bindToController: true,
                 templateUrl: 'app/_components/grid-sample/grid-sample.template.html'
             };
         });

@@ -35,6 +35,7 @@ angular.module('app').service('gridModel', function () {
     };
 
     function filterData(data, filter) {
+      
         if(typeof(filter) !== 'undefined' && filter.length > 0) {
 
             var filteredData = data.filter(function(item) {
@@ -88,8 +89,9 @@ angular.module('app').service('gridModel', function () {
         var data = generateData();
         var filteredData = filterData(data, settings.filter);
         var sortedData = sortData(filteredData, settings.sorting);
+        var len = sortedData.length;
         var partData = getDataInterval(sortedData, settings.interval);
-        var len = filteredData.length;
+       
 
         return [{items: partData, totalCount: len}];
     };

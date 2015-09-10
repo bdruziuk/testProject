@@ -14,8 +14,7 @@
         .directive('staticSample', function() {
         	return {
         		restrict: 'EA',
-        		scope: {
-        		},
+        		scope: {},
         		controller: 'StaticSampleController',
         		controllerAs: 'vm',
         		bindToController: true,
