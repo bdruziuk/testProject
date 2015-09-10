@@ -32,21 +32,44 @@ angular.module('app').service('gridModel', function () {
         else return data;
     };
 
+    function filterData(data, filter) {
+        if(typeof(filter) !== 'undefined' && filter.length > 0) {
+
+            var filteredData = data.filter(function(item) {
+
+                var flag = filter.every(function(element, index) {
+                    if(item[element.field].toString().includes(element.value)) return true;
+                    else return false;
+                });
+
+                if (flag) return item;
+            });
+
+            return filteredData;
+        }
+        else return data;
+    };
+
+    function sortData(data, sorting) {
+
+    };
+
     this.getData = function (settings) {
 
         var data = generateData();
-        var len=data.length;
+        var filteredData = filterData(data, settings.filter);
+        var len = filteredData.length;
         
         if(settings.interval) {
             if(!settings.interval.start){
-                settings.interval.start=0;
+                settings.interval.start = 0;
             }
             if(!settings.interval.count){
-                settings.interval.count=20;
+                settings.interval.count = 20;
             }
-            var data = getDataInterval(data, settings.interval);
+            filteredData = getDataInterval(filteredData, settings.interval);
         }
 
-        return [{items:data,totalCount:len}];
+        return [{items: filteredData, totalCount: len}];
     };
 });
