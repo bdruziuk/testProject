@@ -23,6 +23,7 @@
                 ],
                 enableSorting: true,
                 enableFiltering:true,
+                useExternalSorting:true,
                 useExternalFiltering:true,
                 infiniteScrollDown: true,
                 //add handlers for events from grid 
@@ -123,8 +124,8 @@
                     // }
                 ],
                 sorting: {
-                    direction: 1,
-                    field: "id"
+                    direction: '',
+                    field: ''
                 },
                 interval: {
                      start: 0,

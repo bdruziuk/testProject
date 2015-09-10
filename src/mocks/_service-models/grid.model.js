@@ -60,20 +60,20 @@ angular.module('app').service('gridModel', function () {
             if(!sorting.field) sorting.field = 'id';
 
             data.sort(function (first, second) {
+                
+                var firstVal = first[sorting.field.toLowerCase()];
+                var secondVal = second[sorting.field.toLowerCase()];
+                
 
-                var firstVal = first[sorting.field];
-                var secondVal = second[sorting.field];
-
-                if(!isNaN(first[sorting.field]) && !isNaN(second[sorting.field])) {
-                    firstVal = parseInt(first[sorting.field]);
-                    secondVal = parseInt(second[sorting.field]);
-                }
-
-                if (firstVal < secondVal)
-                    return -1;
-                if (firstVal > secondVal)
+                if (firstVal > secondVal){
                     return 1;
-                return 0;
+                }
+                if (firstVal < secondVal){
+                    return -1;
+                }else{
+                     return 0;
+                }
+               
             });
 
             if (sorting.direction == 'desc') data.reverse();
