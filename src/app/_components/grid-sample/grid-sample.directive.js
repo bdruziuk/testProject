@@ -25,7 +25,7 @@
                 enableFiltering:true,
                 useExternalFiltering:true,
                 infiniteScrollDown: true,
-                
+                //add handlers for events from grid 
                 onRegisterApi: function(gridApi){
                   gridApi.infiniteScroll.on.needLoadMoreData($scope, $scope.getNextPage);
                   gridApi.infiniteScroll.on.needLoadMoreDataTop($scope, $scope.getPreviousPage);
@@ -35,7 +35,9 @@
                   
                 }
             };
-
+            /**
+            calls to get next page on infinity scroll
+            **/
             $scope.getNextPage = function(){
                 currentPage++;
                 $scope.settings.interval.start=(currentPage*$scope.settings.interval.count);
@@ -45,13 +47,18 @@
                     $scope.gridApi.infiniteScroll.dataLoaded()
                  });
             };
-            
+             /**
+                calls to get first portiion of data for grid
+            **/
             $scope.getFirstData = function() {
                  gridSampleService.getData($scope.settings).then(function(data) {
                     lastPage=data[0].totalCount/$scope.settings.interval.count;
                     $scope.gridOptions.data = data[0].items;
                  });
             };
+             /**
+                calls to perform remote filtering
+            **/
             $scope.onFilterChanged=function(){
                 if (angular.isDefined($scope.filterTimeout)) {
                     $timeout.cancel($scope.filterTimeout);
@@ -86,6 +93,9 @@
                         });
                   },500);
             };
+             /**
+                calls to perform remote sorting
+            **/
             $scope.onSortChanged = function ( grid, sortColumns ) {
                 var direction=sortColumns[0].sort.direction;
                 var columnName=sortColumns[0].name;
@@ -96,6 +106,9 @@
                     $scope.gridOptions.data=data[0].items;
                 });
             };
+            /**
+             settings for grid
+            **/
             $scope.settings = {
                 filter: [
                     // {
