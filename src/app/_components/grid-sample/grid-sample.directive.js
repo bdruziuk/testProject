@@ -42,11 +42,6 @@
                     $scope.gridApi.infiniteScroll.saveScrollPercentage();
                     $scope.gridOptions.data=$scope.gridOptions.data.concat(data[0].items); 
                     $scope.gridApi.infiniteScroll.dataLoaded()
-                    .then(function() {
-                            $scope.checkDataLength('up');
-                            console.log( $scope.gridOptions.data.length)
-                        }
-                    );
                  });
             };
             
