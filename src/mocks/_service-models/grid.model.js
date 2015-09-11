@@ -1,6 +1,6 @@
-angular.module('app').service('gridModel', function () {
+angular.module('app').service('gridModel', function ($filter) {
 
-    function generateData() {
+    var generateData = function () {
         // default model
         var data = [];
 
@@ -8,23 +8,14 @@ angular.module('app').service('gridModel', function () {
         for(var i = 1; i < 1000; i++) {
             data.push({
                 id: i,
-                value: i + " test"
+                value: i + "test"
             });
         }
-
-        //shuffle data
-        /*for (var j = 0; j < data.length - 1; j++) {
-            var k = j + Math.floor(Math.random() * (data.length - j));
-            var temp = data[k];
-
-            data[k] = data[j];
-            data[j] = temp;
-        }*/
 
         return data;
     }
 
-    function getDataInterval(data, interval) {
+    var getDataInterval = function (data, interval) {
         if(interval) {
             if(!interval.start) interval.start = 0;
             if(!interval.count) interval.count = 20;
@@ -34,52 +25,24 @@ angular.module('app').service('gridModel', function () {
         else return data;
     };
 
-    function filterData(data, filter) {
-      
-        if(typeof(filter) !== 'undefined' && filter.length > 0) {
+    var filterData = function (data, filter) {
 
-            var filteredData = data.filter(function(item) {
-
-                var flag = filter.every(function(element, index) {
-                    if(item[element.field].toString().includes(element.value)) return true;
-                    else return false;
-                });
-
-                if (flag) return item;
-            });
-
-            return filteredData;
-        }
+        if(typeof(filter) !== 'undefined')
+            return $filter('filter')(data, filter);
         else return data;
+
     };
 
-    function sortData(data, sorting) {
+    var sortData = function (data, sorting) {
 
         if(sorting && sorting.direction) {
 
             if(!sorting.direction) sorting.direction = 'asc';
             if(!sorting.field) sorting.field = 'id';
 
-            data.sort(function (first, second) {
-                
-                var firstVal = first[sorting.field.toLowerCase()];
-                var secondVal = second[sorting.field.toLowerCase()];
-                
+            var reverse = (sorting.direction == 'asc') ? true : false;
 
-                if (firstVal > secondVal){
-                    return 1;
-                }
-                if (firstVal < secondVal){
-                    return -1;
-                }else{
-                     return 0;
-                }
-               
-            });
-
-            if (sorting.direction == 'desc') data.reverse();
-
-            return data;
+            return $filter('orderBy')(data, sorting.field, reverse);
         }
         else return data;
     };
@@ -91,7 +54,6 @@ angular.module('app').service('gridModel', function () {
         var sortedData = sortData(filteredData, settings.sorting);
         var len = sortedData.length;
         var partData = getDataInterval(sortedData, settings.interval);
-       
 
         return [{items: partData, totalCount: len}];
     };
