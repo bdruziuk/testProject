@@ -54,8 +54,8 @@
                 gridSampleService.getData(vm.gridRequestSettings).then(function(data) {
                     vm.gridApi.infiniteScroll.saveScrollPercentage();
                     vm.gridOptions.data = vm.gridOptions.data.concat(data[0].items);
-                    var isContunieScrolling = vm.gridOptions.data.length < _recordTotalCount;
-                    vm.gridApi.infiniteScroll.dataLoaded(false,isContunieScrolling);
+                    var isConnieScrolling = vm.gridOptions.data.length < _recordTotalCount;
+                    vm.gridApi.infiniteScroll.dataLoaded(false,isConnieScrolling);
                  });
             };
             /**
