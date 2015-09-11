@@ -80,13 +80,10 @@
                 var paramsObj = {};
 
                 for(var i = 0; i < columns.length; i++){
-
                     if(columns[i]){
                         var col = columns[i];
-
                         if(col.filters){
                             var f = col.filters[0];
-
                             if(f && f.term && f.term.length > 0) paramsObj[col.field] = f.term;
                         }
                     }
@@ -114,7 +111,8 @@
 
                 if(sortColumns.length > 0){
                     var direction = sortColumns[0].sort.direction;
-                    var columnName = sortColumns[0].name;
+                    var columnName = sortColumns[0].field;
+
                     vm.gridRequestSettings.sorting.direction = direction;
                     vm.gridRequestSettings.sorting.field = columnName;
                 }

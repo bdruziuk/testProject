@@ -40,29 +40,9 @@ angular.module('app').service('gridModel', function ($filter) {
             if(!sorting.direction) sorting.direction = 'asc';
             if(!sorting.field) sorting.field = 'id';
 
-            /*data.sort(function (first, second) {
-                
-                var firstVal = first[sorting.field.toLowerCase()];
-                var secondVal = second[sorting.field.toLowerCase()];
-                
+            var reverse = (sorting.direction == 'asc') ? true : false;
 
-                if (firstVal > secondVal){
-                    return 1;
-                }
-                if (firstVal < secondVal){
-                    return -1;
-                }else{
-                     return 0;
-                }
-               
-            });*/
-
-            /*if (sorting.direction == 'desc') data.reverse();*/
-
-
-            //return $filter('orderBy')(data, sorting.field);
-
-            return data;
+            return $filter('orderBy')(data, sorting.field, reverse);
         }
         else return data;
     };
