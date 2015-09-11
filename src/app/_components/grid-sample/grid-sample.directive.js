@@ -61,7 +61,7 @@
             vm.getFirstData = function() {
                   gridSampleService.getData(vm.gridRequestSettings).then(function(data) {
                      vm.gridOptions.data = data[0].items;
-                     _recordTotalCount=data[0].totalCount
+                     _recordTotalCount=data[0].totalCount;
                   });
             };
             /**
