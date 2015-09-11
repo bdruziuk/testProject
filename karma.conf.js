@@ -12,6 +12,11 @@ module.exports = function(config) {
 
 		files: [
 		    // bower:js
+		    'src/bower_components/angular/angular.js',
+		    'src/bower_components/angular-resource/angular-resource.js',
+		    'src/bower_components/angular-ui-grid/ui-grid.js',
+		    'src/bower_components/ui-router/release/angular-ui-router.js',
+		    'src/bower_components/angular-mocks/angular-mocks.js',
 		    // endbower
 		    // injector:js
 		    'src/app/app.js',
